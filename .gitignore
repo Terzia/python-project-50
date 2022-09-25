@@ -1,0 +1,12 @@
+#Директории cache любой вложенности
+**/__pycache__
+
+#Environments
+/.venv
+
+#Packaging
+dist/
+
+.pytest_cache/
+
+/Files
