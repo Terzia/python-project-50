@@ -9,6 +9,8 @@ dist/
 
 .pytest_cache/
 
-/Files
-
 .idea/
+
+.coverage
+
+coverage.xml
