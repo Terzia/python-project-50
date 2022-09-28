@@ -1,13 +1,18 @@
 import json
 
+import yaml
+
 
 def get_dictionary(file_path):
+    '''Parses json or yaml files to dictionary'''
     with open(file_path, 'r') as file:
-        dictionary = json.load(file)
-        return dictionary
+        if 'json' in file_path:
+            return json.load(file)
+        return yaml.safe_load(file)
 
 
 def convert_boolean(value):
+    '''Converts Boolean values to json format'''
     if isinstance(value, bool):
         return str(value).lower()
     return value
@@ -31,3 +36,5 @@ def generate_diff(file_path1, file_path2):
                      f'- {key}: {convert_boolean(data1.get(key))}\n' \
                      f'+ {key}: {convert_boolean(data2.get(key))}'
     return f"{result}\n}}"
+
+print(generate_diff('/home/elena/python-project-50/tests/fixtures/file1.yaml', '/home/elena/python-project-50/tests/fixtures/file2.yaml'))
