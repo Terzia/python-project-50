@@ -36,5 +36,3 @@ def generate_diff(file_path1, file_path2):
                      f'- {key}: {convert_boolean(data1.get(key))}\n' \
                      f'+ {key}: {convert_boolean(data2.get(key))}'
     return f"{result}\n}}"
-
-print(generate_diff('/home/elena/python-project-50/tests/fixtures/file1.yaml', '/home/elena/python-project-50/tests/fixtures/file2.yaml'))
