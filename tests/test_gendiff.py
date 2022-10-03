@@ -45,3 +45,15 @@ def test_yaml():
     path1 = get_abs_fixture_path('file1.yaml')
     path2 = get_abs_fixture_path('file2.yaml')
     assert generate_diff(path1, path2) == read(get_abs_fixture_path('plain.txt'))
+
+
+def test_nested_json():
+    path1 = get_rel_fixture_path('nest_file1.json')
+    path2 = get_rel_fixture_path('nest_file2.json')
+    assert generate_diff(path1, path2) == read(get_abs_fixture_path('nested.txt'))
+
+
+def test_nested_yaml():
+    path1 = get_abs_fixture_path('nest_file1.yaml')
+    path2 = get_abs_fixture_path('nest_file2.yaml')
+    assert generate_diff(path1, path2) == read(get_abs_fixture_path('nested.txt'))
