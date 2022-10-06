@@ -17,14 +17,12 @@ def convert_to_json(value):
     '''Converts values to json format'''
     if isinstance(value, bool):
         return str(value).lower()
-    elif value == None:
+    elif value is None:
         return 'null'
-    elif value == ' ':
-        return ''
     return value
 
 
-def convert_dict(dictionary, indent, start):
+def get_str(dictionary, start, indent='  '):
     '''Converts dictionary to string'''
 
     def inner(current_data, counter):
@@ -42,75 +40,78 @@ def convert_dict(dictionary, indent, start):
     return inner(dictionary, start)
 
 
-def stylish(diff):
+def stylish(diff, counter=0):
     '''Converts difference between two files to string'''
-
-    def inner(diff, counter):
-        string = []
-        depth = counter + 1
-        indent = '  ' * depth
-        for item in diff:
-            if item.get('status') == 'added':
-                string.append(f'{indent}+ {item.get("name")}: '
-                              f'{convert_dict(item.get("value"), "  ", depth + 1)}')
-            if item.get('status') == 'deleted':
-                string.append(f'{indent}- {item.get("name")}: '
-                              f'{convert_dict(item.get("value"), "  ", depth + 1)}')
-            if item.get('status') == 'unchanged':
-                string.append(f'{indent}  {item.get("name")}: '
-                              f'{convert_dict(item.get("value"), "  ", depth + 1)}')
-            if item.get('status') == 'changed':
-                if item.get('children'):
-                    string.append(f'{indent}  {item.get("name")}: '
-                                  f'{inner(item.get("children"), depth + 1)}')
-                else:
-                    string.append(f'{indent}- {item.get("name")}: '
-                                  f'{convert_dict(item.get("value")[0], "  ", depth + 1)}\n'
-                                  f'{indent}+ {item.get("name")}: '
-                                  f'{convert_dict(item.get("value")[1], "  ", depth + 1)}')
-        result = itertools.chain("{", string, ['  ' * counter + "}"])
-        return '\n'.join(result)
-
-    return inner(diff, 0)
+    string = []
+    depth = counter + 1
+    indent = '  ' * depth
+    for item in diff:
+        if item.get('status') == 'added':
+            string.append(f'{indent}+ {item.get("name")}: '
+                          f'{get_str(item.get("value"), depth + 1)}')
+        if item.get('status') == 'deleted':
+            string.append(f'{indent}- {item.get("name")}: '
+                          f'{get_str(item.get("value"), depth + 1)}')
+        if item.get('status') == 'unchanged':
+            string.append(f'{indent}  {item.get("name")}: '
+                          f'{get_str(item.get("value"), depth + 1)}')
+        if item.get('status') == 'changed':
+            string.append(f'{indent}- {item.get("name")}: '
+                          f'{get_str(item.get("value")[0], depth + 1)}\n'
+                          f'{indent}+ {item.get("name")}: '
+                          f'{get_str(item.get("value")[1], depth + 1)}')
+        if item.get('status') == 'nested':
+            string.append(f'{indent}  {item.get("name")}: '
+                          f'{stylish(item.get("children"), depth + 1)}')
+    result = itertools.chain("{", string, ['  ' * counter + "}"])
+    return '\n'.join(result)
 
 
-def generate_diff(file_path1, file_path2, formater=stylish):
+def gen_diff(data1, data2):
+    '''Generates tree of difference between two dicts into list of
+    dictionaries, where items describe every key in original data,
+    with name, status: added, deleted, changed or nested, and value, or
+    'children' in case if both of changed values are dictionaries.
+    For changed values in another case, function generates list, where
+    first item is value in 1st data.'''
+    keys = list(data1.keys() | data2.keys())
+    keys.sort()
+    result = []
+    for key in keys:
+        dictionary = {}
+        dictionary['name'] = key
+        if key not in data1:
+            dictionary['status'] = 'added'
+            dictionary['value'] = convert_to_json(data2.get(key))
+            result.append(dictionary)
+        elif key not in data2:
+            dictionary['status'] = 'deleted'
+            dictionary['value'] = convert_to_json(data1.get(key))
+            result.append(dictionary)
+        elif data1.get(key) == data2.get(key):
+            dictionary['status'] = 'unchanged'
+            dictionary['value'] = convert_to_json(data2.get(key))
+            result.append(dictionary)
+        elif data1.get(key) != data2.get(key) and\
+                isinstance(data1.get(key), dict) and\
+                isinstance(data2.get(key), dict):
+            dictionary['status'] = 'nested'
+            dictionary['children'] = gen_diff(data1[key], data2[key])
+            result.append(dictionary)
+        else:
+            dictionary['status'] = 'changed'
+            dictionary['value'] = [
+                convert_to_json(data1.get(key)),
+                convert_to_json(data2.get(key))
+            ]
+            result.append(dictionary)
+    return result
+
+
+def generate_diff(file_path1, file_path2, formatter=stylish):
     '''Generates tree of difference between two files and converts it to string
-    with formater'''
+    with given format'''
     dict1 = get_dictionary(file_path1)
     dict2 = get_dictionary(file_path2)
-    def inner(data1, data2):
-        keys = list(data1.keys() | data2.keys())
-        keys.sort()
-        result = []
-        for key in keys:
-            dictionary = {}
-            if key not in data1:
-                dictionary['name'] = key
-                dictionary['status'] = 'added'
-                dictionary['value'] = convert_to_json(data2.get(key))
-                result.append(dictionary)
-            elif key not in data2:
-                dictionary['name'] = key
-                dictionary['status'] = 'deleted'
-                dictionary['value'] = convert_to_json(data1.get(key))
-                result.append(dictionary)
-            elif data1.get(key) == data2.get(key):
-                dictionary['name'] = key
-                dictionary['status'] = 'unchanged'
-                dictionary['value'] = convert_to_json(data2.get(key))
-                result.append(dictionary)
-            else:
-                dictionary['name'] = key
-                dictionary['status'] = 'changed'
-                if type(data1.get(key)) == dict and type(data2.get(key)) == dict:
-                    dictionary['children'] = inner(data1.get(key), data2.get(key))
-                else:
-                    dictionary['value'] = [
-                        convert_to_json(data1.get(key)),
-                        convert_to_json(data2.get(key))
-                    ]
-                result.append(dictionary)
-        return result
-
-    return formater(inner(dict1, dict2))
+    diff = gen_diff(dict1, dict2)
+    return formatter(diff)
