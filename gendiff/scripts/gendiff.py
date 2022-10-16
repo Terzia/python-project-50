@@ -1,6 +1,8 @@
 import argparse
 
-from ..generate_diff import generate_diff
+from gendiff.generate_diff import generate_diff
+
+from gendiff.formatters.plain import plain
 
 
 def main():
@@ -14,12 +16,17 @@ def main():
                         type=str,
                         help='Inputs path to the second compared file')
     parser.add_argument('-f', '--format',
-                        type=str,
+                        choices=['stylish', 'plain'],
+                        default='stylish',
                         help='Set format of output')
     args = parser.parse_args()
     file_path1 = args.first_file
     file_path2 = args.second_file
-    print(generate_diff(file_path1, file_path2))
+    formatter = args.format
+    if formatter == 'stylish':
+        print(generate_diff(file_path1, file_path2))
+    elif formatter == 'plain':
+        print(generate_diff(file_path1, file_path2, plain))
 
 
 if __name__ == '__main__':
