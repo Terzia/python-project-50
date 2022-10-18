@@ -28,9 +28,9 @@ def main():
     if formatter == 'stylish':
         print(generate_diff(file_path1, file_path2))
     if formatter == 'plain':
-        print(generate_diff(file_path1, file_path2, plain))
+        print(generate_diff(file_path1, file_path2, 'plain'))
     if formatter == 'json':
-        print(generate_diff(file_path1, file_path2, json))
+        print(generate_diff(file_path1, file_path2, 'json'))
 
 
 if __name__ == '__main__':

@@ -4,6 +4,10 @@ import yaml
 
 from gendiff.formatters.stylish import stylish
 
+from gendiff.formatters.plain import plain
+
+from gendiff.formatters.json_format import json_format
+
 
 def get_dictionary(file_path):
     """Parses json or yaml files to dictionary"""
@@ -56,7 +60,16 @@ def gen_diff(data1, data2):
     return result
 
 
-def generate_diff(file_path1, file_path2, formatter=stylish):
+def format_output(diff, format):
+    if format == 'stylish':
+        return stylish(diff)
+    if format == 'plain':
+        return plain(diff)
+    if format == 'json':
+        return json_format(diff)
+
+
+def generate_diff(file_path1, file_path2, format='stylish'):
     """Generates tree of difference between two json or yaml files
     and converts it to string with given format of output:
     the default format is stylish, besides, plain and json_format
@@ -64,4 +77,4 @@ def generate_diff(file_path1, file_path2, formatter=stylish):
     dict1 = get_dictionary(file_path1)
     dict2 = get_dictionary(file_path2)
     diff = gen_diff(dict1, dict2)
-    return formatter(diff)
+    return format_output(diff, format)

@@ -68,10 +68,10 @@ def test_nested_stylish(path1, path2):
 @pytest.mark.parametrize("path1, path2", nest_paths)
 def test_plain_output(path1, path2):
     """Tests working with nested files, plain output format."""
-    assert generate_diff(path1, path2, plain) == nested_data[1]
+    assert generate_diff(path1, path2, 'plain') == nested_data[1]
 
 
 @pytest.mark.parametrize("path1, path2", nest_paths)
 def test_json_output(path1, path2):
     """Tests working with nested files, json output format."""
-    assert generate_diff(path1, path2, json) == nested_data[2]
+    assert generate_diff(path1, path2, 'json') == nested_data[2]
