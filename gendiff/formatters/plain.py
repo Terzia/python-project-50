@@ -11,19 +11,19 @@ def convert_to_json(value):
 
 
 def plain(diff, path=''):
-    '''Converts difference between two files into plain format'''
+    """Converts difference between two files into plain format"""
     string = []
     for node in diff:
         name = f"{path}{node['name']}"
         if node.get('status') == 'added':
-            string.append(f"Property {name} "
+            string.append(f"Property '{name}' "
                           f"was added with value: "
                           f"{convert_to_json(node.get('value'))}")
         if node.get('status') == 'deleted':
-            string.append(f"Property {name} was removed")
+            string.append(f"Property '{name}' was removed")
         if node.get('status') == 'changed':
-            string.append(f"Property {name} "
-                          f"was updated from "
+            string.append(f"Property '{name}' "
+                          f"was updated. From "
                           f"{convert_to_json(node.get('value')[0])} "
                           f"to {convert_to_json(node.get('value')[1])}")
         if node.get('status') == 'nested':

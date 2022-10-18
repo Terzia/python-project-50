@@ -2,7 +2,7 @@ import itertools
 
 
 def convert_to_json(value):
-    '''Converts values to json format of output'''
+    """Converts values to json format of output"""
     if isinstance(value, bool):
         return str(value).lower()
     if value is None:
@@ -11,8 +11,8 @@ def convert_to_json(value):
 
 
 def get_str(dictionary, start, indent='  '):
-    '''Converts dictionary to output string with indentation
-    based on nesting depth.'''
+    """Converts dictionary to output string with indentation
+    based on nesting depth."""
     def inner(current_data, counter):
         if not isinstance(current_data, dict):
             return str(current_data)
@@ -30,8 +30,8 @@ def get_str(dictionary, start, indent='  '):
 
 
 def stylish(diff, counter=0):
-    '''Converts difference between two files to output string with
-    indentation, based on nesting depth.'''
+    """Converts difference between two files to output string with
+    indentation, based on nesting depth."""
     string = []
     depth = counter + 1
     indent = '  ' * depth

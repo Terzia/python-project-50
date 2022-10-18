@@ -6,7 +6,7 @@ from gendiff.formatters.stylish import stylish
 
 
 def get_dictionary(file_path):
-    '''Parses json or yaml files to dictionary'''
+    """Parses json or yaml files to dictionary"""
     with open(file_path, 'r') as file:
         if 'json' in file_path:
             return json.load(file)
@@ -14,13 +14,13 @@ def get_dictionary(file_path):
 
 
 def gen_diff(data1, data2):
-    '''Generates tree of difference between two dicts into list of
+    """Generates tree of difference between two dicts into list of
     dictionaries, where items describe every key in original data,
     with name, status: added, deleted, unchanged, changed or nested,
     and value, or 'children' in case if both of changed values are
-    dictionaries. 'Children' is the same list of dictionaries.
+    dictionaries. 'Children' is the list of dictionaries too.
     For changed values in another case, function generates list, where
-    first item is value in 1st data.'''
+    first item is value in 1st data."""
     keys = list(data1.keys() | data2.keys())
     keys.sort()
     result = []
@@ -56,8 +56,8 @@ def gen_diff(data1, data2):
 
 
 def generate_diff(file_path1, file_path2, formatter=stylish):
-    '''Generates tree of difference between two json or yaml files
-    and converts it to string with given format of output.'''
+    """Generates tree of difference between two json or yaml files
+    and converts it to string with given format of output."""
     dict1 = get_dictionary(file_path1)
     dict2 = get_dictionary(file_path2)
     diff = gen_diff(dict1, dict2)
