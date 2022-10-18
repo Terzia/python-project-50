@@ -4,6 +4,8 @@ from gendiff.generate_diff import generate_diff
 
 from gendiff.formatters.plain import plain
 
+from gendiff.formatters.json_format import json_format as json
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -16,7 +18,7 @@ def main():
                         type=str,
                         help='Inputs path to the second compared file')
     parser.add_argument('-f', '--format',
-                        choices=['stylish', 'plain'],
+                        choices=['stylish', 'plain', 'json'],
                         default='stylish',
                         help='Set format of output')
     args = parser.parse_args()
@@ -25,8 +27,10 @@ def main():
     formatter = args.format
     if formatter == 'stylish':
         print(generate_diff(file_path1, file_path2))
-    elif formatter == 'plain':
+    if formatter == 'plain':
         print(generate_diff(file_path1, file_path2, plain))
+    if formatter == 'json':
+        print(generate_diff(file_path1, file_path2, json))
 
 
 if __name__ == '__main__':

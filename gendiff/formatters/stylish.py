@@ -2,7 +2,7 @@ import itertools
 
 
 def convert_to_json(value):
-    """Converts values to json format of output"""
+    """Converts values to json format for output"""
     if isinstance(value, bool):
         return str(value).lower()
     if value is None:
@@ -49,10 +49,12 @@ def stylish(diff, counter=0):
             string.append(f'{indent}  {name}: '
                           f'{get_str(value, depth + 1)}')
         if status == 'changed':
+            old_value = convert_to_json(value['old'])
+            new_value = convert_to_json(value['new'])
             string.append(f'{indent}- {name}: '
-                          f'{get_str(convert_to_json(value[0]), depth + 1)}\n'
+                          f'{get_str(old_value, depth + 1)}\n'
                           f'{indent}+ {name}: '
-                          f'{get_str(convert_to_json(value[1]), depth + 1)}')
+                          f'{get_str(new_value, depth + 1)}')
         if status == 'nested':
             string.append(f'{indent}  {name}: '
                           f'{stylish(node.get("children"), depth + 1)}')

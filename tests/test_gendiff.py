@@ -3,7 +3,10 @@ import os
 import pytest
 
 from gendiff.formatters.plain import plain
+
 from gendiff.generate_diff import generate_diff
+
+from gendiff.formatters.json_format import json_format as json
 
 
 def get_abs_fixture_path(file_name):
@@ -67,3 +70,9 @@ def test_nested_stylish(path1, path2):
 def test_plain_output(path1, path2):
     """Tests working with nested files, plain output format."""
     assert generate_diff(path1, path2, plain) == nested_data[1]
+
+
+@pytest.mark.parametrize("path1, path2", nest_paths)
+def test_plain_output(path1, path2):
+    """Tests working with nested files, json output format."""
+    assert generate_diff(path1, path2, json) == nested_data[2]

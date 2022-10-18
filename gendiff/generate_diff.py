@@ -19,8 +19,9 @@ def gen_diff(data1, data2):
     with name, status: added, deleted, unchanged, changed or nested,
     and value, or 'children' in case if both of changed values are
     dictionaries. 'Children' is the list of dictionaries too.
-    For changed values in another case, function generates list, where
-    first item is value in 1st data."""
+    For changed values in another case, function generates key 'value'
+    with nested dictionary as value, where 'old' key is value in 1st data,
+    and 'new' key is value in 2nd."""
     keys = list(data1.keys() | data2.keys())
     keys.sort()
     result = []
@@ -47,17 +48,19 @@ def gen_diff(data1, data2):
             result.append(dictionary)
         else:
             dictionary['status'] = 'changed'
-            dictionary['value'] = [
-                data1.get(key),
-                data2.get(key)
-            ]
+            dictionary['value'] = {
+                'old': data1.get(key),
+                'new': data2.get(key)
+            }
             result.append(dictionary)
     return result
 
 
 def generate_diff(file_path1, file_path2, formatter=stylish):
     """Generates tree of difference between two json or yaml files
-    and converts it to string with given format of output."""
+    and converts it to string with given format of output:
+    the default format is stylish, besides, plain and json_format
+    can be chosen"""
     dict1 = get_dictionary(file_path1)
     dict2 = get_dictionary(file_path2)
     diff = gen_diff(dict1, dict2)
