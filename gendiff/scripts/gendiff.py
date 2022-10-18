@@ -2,10 +2,6 @@ import argparse
 
 from gendiff.generate_diff import generate_diff
 
-from gendiff.formatters.plain import plain
-
-from gendiff.formatters.json_format import json_format as json
-
 
 def main():
     parser = argparse.ArgumentParser(
