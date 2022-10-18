@@ -31,14 +31,6 @@ def read(file_path):
 plain_data = read(get_abs_fixture_path('plain.txt')).rstrip().split('\n\n\n')
 nested_data = read(get_abs_fixture_path('nested.txt')).rstrip().split('\n\n\n')
 
-
-def test_abs_path():
-    """Tests working with absolute paths and plain json files."""
-    path1 = get_abs_fixture_path('file1.json')
-    path2 = get_abs_fixture_path('file2.json')
-    assert generate_diff(path1, path2) == plain_data[0]
-
-
 plain_paths = [
     (get_rel_fixture_path('file1.json'),
      get_rel_fixture_path('file2.json')),
@@ -52,6 +44,13 @@ nest_paths = [
     (get_abs_fixture_path('nest_file1.yaml'),
      get_abs_fixture_path('nest_file2.yaml'))
 ]
+
+
+def test_abs_path():
+    """Tests working with absolute paths and plain json files."""
+    path1 = get_abs_fixture_path('file1.json')
+    path2 = get_abs_fixture_path('file2.json')
+    assert generate_diff(path1, path2) == plain_data[0]
 
 
 @pytest.mark.parametrize("path1, path2", plain_paths)
@@ -73,6 +72,6 @@ def test_plain_output(path1, path2):
 
 
 @pytest.mark.parametrize("path1, path2", nest_paths)
-def test_plain_output(path1, path2):
+def test_json_output(path1, path2):
     """Tests working with nested files, json output format."""
     assert generate_diff(path1, path2, json) == nested_data[2]
