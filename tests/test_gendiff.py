@@ -2,11 +2,7 @@ import os
 
 import pytest
 
-from gendiff.formatters.plain import plain
-
 from gendiff.generate_diff import generate_diff
-
-from gendiff.formatters.json_format import json_format as json
 
 
 def get_abs_fixture_path(file_name):
@@ -27,7 +23,8 @@ def read(file_path):
         result = file.read()
     return result
 
-#Expected output
+
+# Expected output
 plain_data = read(get_abs_fixture_path('plain.txt')).rstrip().split('\n\n\n')
 nested_data = read(get_abs_fixture_path('nested.txt')).rstrip().split('\n\n\n')
 
