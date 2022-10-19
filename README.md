@@ -48,7 +48,7 @@ Open a command-line prompt
 
 Run the following command:
 ```
-$ make package-install
+$ make install
 ```
 
 ### Hexlet tests and linter status:
