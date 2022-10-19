@@ -18,14 +18,17 @@ def get_dictionary(file_path):
 
 
 def gen_diff(data1, data2):
-    """Generates tree of difference between two dicts into list of
-    dictionaries, where items describe every key in original data,
-    with name, status: added, deleted, unchanged, changed or nested,
-    and value, or 'children' in case if both of changed values are
+    """Generate tree of difference between two dicts into list of
+    dictionaries.
+
+    List items describe every key in original data, with name,
+    status (added, deleted, unchanged, changed or nested) and value,
+    or 'children' in case if both of changed values are
     dictionaries. 'Children' is the list of dictionaries too.
     For changed values in another case, function generates key 'value'
     with nested dictionary as value, where 'old' key is value in 1st data,
-    and 'new' key is value in 2nd."""
+    and 'new' key is value in 2nd.
+    """
     keys = list(data1.keys() | data2.keys())
     keys.sort()
     result = []
@@ -70,10 +73,23 @@ def format_output(diff, format):
 
 
 def generate_diff(file_path1, file_path2, format='stylish'):
-    """Generates tree of difference between two json or yaml files
-    and converts it to string with given format of output:
-    the default format is stylish, besides, plain and json_format
-    can be chosen"""
+    """Generate tree of difference between two json or yaml files
+    and convert it to string.
+
+    The result string is output in the given format:
+    the default format is stylish, besides, plain and json format
+    can be chosen.
+    Positional arguments:
+        file_path1 (str): absolute or relative path to the 1st compared file
+        file_path2 (str): absolute or relative path to the 2nd compared file
+    Optional keyword argument:
+        format (str): format of output
+            values: 'stylish' (default)
+                    'plain'
+                    'json'
+    Returns:
+        string in the given format
+    """
     dict1 = get_dictionary(file_path1)
     dict2 = get_dictionary(file_path2)
     diff = gen_diff(dict1, dict2)

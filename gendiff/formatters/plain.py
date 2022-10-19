@@ -4,10 +4,10 @@ def convert_to_json(value):
         return '[complex value]'
     if isinstance(value, bool):
         return str(value).lower()
-    if value is None:
-        return 'null'
     if isinstance(value, int):
         return value
+    if value is None:
+        return 'null'
     return f"'{value}'"
 
 
@@ -25,8 +25,7 @@ def plain(diff, path=''):
         if node.get('status') == 'changed':
             old_value = convert_to_json(node.get('value')['old'])
             new_value = convert_to_json(node.get('value')['new'])
-            string.append(f"Property '{name}' "
-                          f"was updated. "
+            string.append(f"Property '{name}' was updated. "
                           f"From {old_value} "
                           f"to {new_value}")
         if node.get('status') == 'nested':
