@@ -1,11 +1,18 @@
 [tool.poetry]
 name = "hexlet-code"
 version = "0.1.0"
-description = ""
+description = "A Difference Calculator - tool for comparing json or yaml objects"
 authors = ["Elena Shlius <eur1ezs@gmail.com>"]
 packages = [
   { include = "gendiff" },
 ]
+classifiers = [
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.8",
+  "Topic :: Education",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+repository = "https://github.com/Terzia/python-project-50.git"
 
 [tool.poetry.dependencies]
 python = "^3.8"

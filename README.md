@@ -4,10 +4,10 @@ Utility features:
 + supports different input formats: yaml, json
 + generates the report with various formatting: plain text, stylish or json
 
-It's also a library which provides 'gendiff' module with 'generate_diff' function. 
-This function returns a string with the difference between the data in the two files.
+It's also a library which provides 'gendiff' python module with 'generate_diff' function. 
+This function returns a string of chosen format with the difference between two objects.
 ### Output formats examples:
-+ Stylish:
++ #### stylish:
 ```
 {
     common: {
@@ -21,13 +21,13 @@ This function returns a string with the difference between the data in the two f
             key5: value5
         }
 ```
-+ Plain:
++ #### plain:
 ```
 Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
 ```
-+ JSON:
++ #### json:
 ```
 {
     "name": "common",
@@ -39,11 +39,11 @@ Property 'common.setting3' was updated. From true to null
         "value": false
       }
 ```
-## Requirements:
+### Requirements:
 - python = "^3.8"
 - pytest-cov = "^3.0.0"
 - PyYAML = "^6.0"
-## Installation:
+### Installation:
 Open a command-line prompt
 
 Run the following command:
@@ -58,7 +58,7 @@ $ make install
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f2e6772428d191c6fcf1/test_coverage)](https://codeclimate.com/github/Terzia/python-project-50/test_coverage)
 <br/>
 
-## Installation process and run with different formats of output:
+### Installation process and run with different formats of output:
 [![asciicast](https://asciinema.org/a/HN6hG3yL4riHVCeSiTv2g7sid.svg)](https://asciinema.org/a/HN6hG3yL4riHVCeSiTv2g7sid)
 
 [![asciicast](https://asciinema.org/a/jCZtKl6pVOibWgJg1sqj216ID.svg)](https://asciinema.org/a/jCZtKl6pVOibWgJg1sqj216ID)
