@@ -28,47 +28,40 @@ def read(file_path):
 plain_data = read(get_abs_fixture_path('plain.txt')).rstrip().split('\n\n\n')
 nested_data = read(get_abs_fixture_path('nested.txt')).rstrip().split('\n\n\n')
 
-plain_paths = [
-    (get_rel_fixture_path('file1.json'),
-     get_rel_fixture_path('file2.json')),
-    (get_abs_fixture_path('file1.yaml'),
-     get_abs_fixture_path('file2.yaml'))
-]
 
-nest_paths = [
-    (get_rel_fixture_path('nest_file1.json'),
-     get_rel_fixture_path('nest_file2.json')),
-    (get_abs_fixture_path('nest_file1.yaml'),
-     get_abs_fixture_path('nest_file2.yaml'))
+# Relative paths
+plain_yaml_path1 = get_rel_fixture_path('file1.yaml')
+plain_yaml_path2 = get_rel_fixture_path('file2.yaml')
+plain_json_path1 = get_rel_fixture_path('file1.json')
+plain_json_path2 = get_rel_fixture_path('file2.json')
+nest_yaml_path1 = get_rel_fixture_path('nest_file1.yaml')
+nest_yaml_path2 = get_rel_fixture_path('nest_file2.yaml')
+nest_json_path1 = get_rel_fixture_path('nest_file1.json')
+nest_json_path2 = get_rel_fixture_path('nest_file2.json')
+
+
+test_parameters = [
+    ([plain_json_path1, plain_json_path2], {}, plain_data[0]),
+    ([plain_yaml_path1, plain_yaml_path2], {}, plain_data[0]),
+    ([nest_json_path1, nest_json_path2], {}, nested_data[0]),
+    ([nest_yaml_path1, nest_yaml_path2], {}, nested_data[0]),
+    ([plain_json_path1, plain_json_path2], {'format': 'plain'}, plain_data[1]),
+    ([nest_json_path1, nest_json_path2], {'format': 'plain'}, nested_data[1]),
+    ([nest_yaml_path1, nest_yaml_path2], {'format': 'plain'}, nested_data[1]),
+    ([nest_json_path1, nest_json_path2], {'format': 'json'}, nested_data[2]),
+    ([nest_yaml_path1, nest_yaml_path2], {'format': 'json'}, nested_data[2])
 ]
 
 
 def test_abs_path():
-    """Tests working with absolute paths and plain json files."""
+    """Tests working with absolute paths."""
     path1 = get_abs_fixture_path('file1.json')
     path2 = get_abs_fixture_path('file2.json')
     assert generate_diff(path1, path2) == plain_data[0]
 
 
-@pytest.mark.parametrize("path1, path2", plain_paths)
-def test_rel_path(path1, path2):
-    """Tests working with plain files, stylish output format."""
-    assert generate_diff(path1, path2) == plain_data[0]
-
-
-@pytest.mark.parametrize("path1, path2", nest_paths)
-def test_nested_stylish(path1, path2):
-    """Tests working with nested files, stylish output format."""
-    assert generate_diff(path1, path2) == nested_data[0]
-
-
-@pytest.mark.parametrize("path1, path2", nest_paths)
-def test_plain_output(path1, path2):
-    """Tests working with nested files, plain output format."""
-    assert generate_diff(path1, path2, 'plain') == nested_data[1]
-
-
-@pytest.mark.parametrize("path1, path2", nest_paths)
-def test_json_output(path1, path2):
-    """Tests working with nested files, json output format."""
-    assert generate_diff(path1, path2, 'json') == nested_data[2]
+@pytest.mark.parametrize("args, kwargs, expected", test_parameters)
+def test_various_format(args, kwargs, expected):
+    """Tests working with plain and nested files, stylish, plain and json output format."""
+    diff = generate_diff(*args, **kwargs)
+    assert diff == expected
