@@ -36,7 +36,7 @@ def stylish(diff, counter=0):
     depth = counter + 1
     indent = '  ' * depth
     for node in diff:
-        status = node.get('status')
+        status = node.get('type')
         name = node.get("name")
         value = convert_to_json(node.get("value"))
         if status == 'added':
