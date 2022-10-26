@@ -3,7 +3,7 @@ import argparse
 from gendiff.generate_diff import generate_diff
 
 
-def main():
+def args_parser():
     parser = argparse.ArgumentParser(
         description='Compares two configuration files and shows a difference.'
     )
@@ -17,16 +17,15 @@ def main():
                         choices=['stylish', 'plain', 'json'],
                         default='stylish',
                         help='Set format of output')
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = args_parser()
     file_path1 = args.first_file
     file_path2 = args.second_file
     formatter = args.format
-    if formatter == 'stylish':
-        print(generate_diff(file_path1, file_path2))
-    if formatter == 'plain':
-        print(generate_diff(file_path1, file_path2, 'plain'))
-    if formatter == 'json':
-        print(generate_diff(file_path1, file_path2, 'json'))
+    print(generate_diff(file_path1, file_path2, formatter))
 
 
 if __name__ == '__main__':
