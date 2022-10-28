@@ -31,11 +31,11 @@ Property 'common.setting3' was updated. From true to null
 ```
 {
     "name": "common",
-    "status": "nested",
+    "type": "nested",
     "children": [
       {
         "name": "follow",
-        "status": "added",
+        "type": "added",
         "value": false
       }
 ```
@@ -51,8 +51,8 @@ Run the following command:
 $ make install
 ```
 
-### Hexlet tests and linter status:
-[![Actions Status](https://github.com/Terzia/python-project-50/workflows/hexlet-check/badge.svg)](https://github.com/Terzia/python-project-50/actions)
+### Hexlet tests and linter type:
+[![Actions type](https://github.com/Terzia/python-project-50/workflows/hexlet-check/badge.svg)](https://github.com/Terzia/python-project-50/actions)
 [![Linter and pytest](https://github.com/Terzia/python-project-50/actions/workflows/Check.yml/badge.svg "Linter and pytest")](https://github.com/Terzia/python-project-50/actions/workflows/Check.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f2e6772428d191c6fcf1/maintainability)](https://codeclimate.com/github/Terzia/python-project-50/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f2e6772428d191c6fcf1/test_coverage)](https://codeclimate.com/github/Terzia/python-project-50/test_coverage)

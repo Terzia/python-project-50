@@ -1,62 +1,65 @@
 import itertools
 
 
-def convert_to_json(value):
-    """Converts values to json format for output"""
+INDENT = '  '
+
+
+def get_json_str(value, start=1):
+    """ Converts values to json strings."""
     if isinstance(value, bool):
         return str(value).lower()
     if value is None:
         return 'null'
-    return value
+    if isinstance(value, dict):
+        return format_dict(value, start)
+    return str(value)
 
 
-def get_str(dictionary, start, indent='  '):
+def format_dict(dictionary, start):
     """Converts dictionary to output string with indentation
-    based on nesting depth."""
-    def inner(current_data, counter):
-        if not isinstance(current_data, dict):
-            return str(current_data)
+    based on nesting depth.
+    """
+    depth = start + 1
+    curr_indent = INDENT * depth
+    string = []
+    for key, value in dictionary.items():
+        string.append(f'{curr_indent}  {key}: '
+                      f'{get_json_str(value, depth + 1)}')
+    result = itertools.chain("{", string, [INDENT * start + "}"])
+    return '\n'.join(result)
 
+
+def stylish(diff):
+    """Converts difference between two json objects into
+    'stylish' output format.
+    """
+
+    def inner(diff, counter):
         depth = counter + 1
-        curr_indent = indent * depth
+        indent = INDENT * depth
         string = []
-        for key, value in current_data.items():
-            string.append(f'{curr_indent}  {key}: '
-                          f'{inner(convert_to_json(value), depth + 1)}')
-        result = itertools.chain("{", string, [indent * counter + "}"])
+        for node in diff:
+            type = node.get('type')
+            name = node.get("name")
+            value = node.get("value")
+            if type == 'added':
+                string.append(f'{indent}+ {name}: '
+                              f'{get_json_str(value, depth + 1)}')
+            if type == 'deleted':
+                string.append(f'{indent}- {name}: '
+                              f'{get_json_str(value, depth + 1)}')
+            if type == 'unchanged':
+                string.append(f'{indent}  {name}: '
+                              f'{get_json_str(value, depth + 1)}')
+            if type == 'changed':
+                old_value = get_json_str(value['old'], depth + 1)
+                new_value = get_json_str(value['new'], depth + 1)
+                string.append(f'{indent}- {name}: {old_value}\n'
+                              f'{indent}+ {name}: {new_value}')
+            if type == 'nested':
+                string.append(f'{indent}  {name}: '
+                              f'{inner(node.get("children"), depth + 1)}')
+        result = itertools.chain("{", string, ['  ' * counter + "}"])
         return '\n'.join(result)
 
-    return inner(dictionary, start)
-
-
-def stylish(diff, counter=0):
-    """Converts difference between two files to output string with
-    indentation, based on nesting depth."""
-    string = []
-    depth = counter + 1
-    indent = '  ' * depth
-    for node in diff:
-        status = node.get('type')
-        name = node.get("name")
-        value = convert_to_json(node.get("value"))
-        if status == 'added':
-            string.append(f'{indent}+ {name}: '
-                          f'{get_str(value, depth + 1)}')
-        if status == 'deleted':
-            string.append(f'{indent}- {name}: '
-                          f'{get_str(value, depth + 1)}')
-        if status == 'unchanged':
-            string.append(f'{indent}  {name}: '
-                          f'{get_str(value, depth + 1)}')
-        if status == 'changed':
-            old_value = convert_to_json(value['old'])
-            new_value = convert_to_json(value['new'])
-            string.append(f'{indent}- {name}: '
-                          f'{get_str(old_value, depth + 1)}\n'
-                          f'{indent}+ {name}: '
-                          f'{get_str(new_value, depth + 1)}')
-        if status == 'nested':
-            string.append(f'{indent}  {name}: '
-                          f'{stylish(node.get("children"), depth + 1)}')
-    result = itertools.chain("{", string, ['  ' * counter + "}"])
-    return '\n'.join(result)
+    return inner(diff, 0)

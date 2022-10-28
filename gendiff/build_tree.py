@@ -3,7 +3,7 @@ def build_tree(data1, data2):
     dictionaries.
 
     List items describe every key in original data, with name,
-    status (added, deleted, unchanged, changed or nested) and value,
+    type (added, deleted, unchanged, changed or nested) and value,
     or 'children' in case if both of changed values are
     dictionaries. 'Children' is the list of dictionaries too.
     For changed values in another case, function generates key 'value'
