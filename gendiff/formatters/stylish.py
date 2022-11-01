@@ -3,9 +3,18 @@ import itertools
 
 INDENT = '  '
 
+PREFIX = {
+    'added': '+ ',
+    'deleted': '- ',
+    'unchanged': '  ',
+    'new': '+ ',
+    'old': '- ',
+    'nested': '  '
+}
+
 
 def get_json_str(value, start=1):
-    """ Converts values to json strings."""
+    """ Convert values to json strings."""
     if isinstance(value, bool):
         return str(value).lower()
     if value is None:
@@ -16,7 +25,7 @@ def get_json_str(value, start=1):
 
 
 def format_dict(dictionary, start):
-    """Converts dictionary to output string with indentation
+    """Convert dictionary as value to output string with indentation
     based on nesting depth.
     """
     depth = start + 1
@@ -29,36 +38,35 @@ def format_dict(dictionary, start):
     return '\n'.join(result)
 
 
+def convert_node(name, value, type, depth):
+    """Convert node with value to output string, 'stylish' format"""
+    indent = INDENT * depth
+    return f'{indent}{PREFIX[type]}{name}: ' \
+           f'{get_json_str(value, depth + 1)}'
+
+
 def stylish(diff):
-    """Converts difference between two json objects into
+    """Convert difference between two json objects into
     'stylish' output format.
     """
 
     def inner(diff, counter):
         depth = counter + 1
-        indent = INDENT * depth
         string = []
         for node in diff:
             type = node.get('type')
             name = node.get("name")
             value = node.get("value")
-            if type == 'added':
-                string.append(f'{indent}+ {name}: '
-                              f'{get_json_str(value, depth + 1)}')
-            if type == 'deleted':
-                string.append(f'{indent}- {name}: '
-                              f'{get_json_str(value, depth + 1)}')
-            if type == 'unchanged':
-                string.append(f'{indent}  {name}: '
-                              f'{get_json_str(value, depth + 1)}')
             if type == 'changed':
                 old_value = get_json_str(value['old'], depth + 1)
                 new_value = get_json_str(value['new'], depth + 1)
-                string.append(f'{indent}- {name}: {old_value}\n'
-                              f'{indent}+ {name}: {new_value}')
-            if type == 'nested':
-                string.append(f'{indent}  {name}: '
-                              f'{inner(node.get("children"), depth + 1)}')
+                string.append(convert_node(name, old_value, 'old', depth))
+                string.append(convert_node(name, new_value, 'new', depth))
+            elif type == 'nested':
+                nested_value = inner(node.get("children"), depth + 1)
+                string.append(convert_node(name, nested_value, type, depth))
+            else:
+                string.append(convert_node(name, value, type, depth))
         result = itertools.chain("{", string, ['  ' * counter + "}"])
         return '\n'.join(result)
 

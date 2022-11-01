@@ -6,7 +6,7 @@ from gendiff.generate_diff import generate_diff, read
 
 
 def get_abs_fixture_path(file_name):
-    '''Returns absolute path to file for comparing.'''
+    """Returns absolute path to file for comparing."""
     current_dir = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(current_dir, 'fixtures', file_name)
 
