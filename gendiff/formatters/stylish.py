@@ -13,7 +13,7 @@ PREFIX = {
 }
 
 
-def get_json_str(value, start=1):
+def convert_value(value, start=1):
     """ Convert values to json strings."""
     if isinstance(value, bool):
         return str(value).lower()
@@ -33,7 +33,7 @@ def format_dict(dictionary, start):
     string = []
     for key, value in dictionary.items():
         string.append(f'{curr_indent}  {key}: '
-                      f'{get_json_str(value, depth + 1)}')
+                      f'{convert_value(value, depth + 1)}')
     result = itertools.chain("{", string, [INDENT * start + "}"])
     return '\n'.join(result)
 
@@ -42,7 +42,7 @@ def convert_node(name, value, type, depth):
     """Convert node with value to output string, 'stylish' format"""
     indent = INDENT * depth
     return f'{indent}{PREFIX[type]}{name}: ' \
-           f'{get_json_str(value, depth + 1)}'
+           f'{convert_value(value, depth + 1)}'
 
 
 def stylish(diff):
@@ -58,8 +58,8 @@ def stylish(diff):
             name = node.get("name")
             value = node.get("value")
             if type == 'changed':
-                old_value = get_json_str(value['old'], depth + 1)
-                new_value = get_json_str(value['new'], depth + 1)
+                old_value = convert_value(value['old'], depth + 1)
+                new_value = convert_value(value['new'], depth + 1)
                 string.append(convert_node(name, old_value, 'old', depth))
                 string.append(convert_node(name, new_value, 'new', depth))
             elif type == 'nested':
